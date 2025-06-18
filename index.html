@@ -1,0 +1,257 @@
+import React, { useState } from 'react';
+import { ChevronRight, ChevronLeft, CheckCircle, RotateCcw } from 'lucide-react';
+
+const WOOFApp = () => {
+  const [currentStep, setCurrentStep] = useState(0);
+  const [showSummary, setShowSummary] = useState(false);
+  const [responses, setResponses] = useState({
+    wish: '',
+    outcome: '',
+    flashback: '',
+    obstacle: '',
+    plan: ''
+  });
+
+  const steps = [
+    {
+      key: 'wish',
+      title: '1. Souhait',
+      subtitle: 'Quel est votre souhait ?',
+      description: 'Pensez à quelque chose que vous aimeriez accomplir dans les prochaines semaines. Choisissez quelque chose qui vous tient à cœur, qui est important pour vous, mais qui représente aussi un défi.',
+      placeholder: 'Améliorer ma condition physique, apprendre une nouvelle langue, développer mes relations sociales...'
+    },
+    {
+      key: 'outcome',
+      title: '2. Issue',
+      subtitle: 'Quel serait le meilleur résultat ?',
+      description: 'Imaginez le meilleur résultat possible si votre souhait se réalisait. Comment vous sentiriez-vous ? Prenez un moment pour vraiment visualiser et ressentir cette réussite.',
+      placeholder: 'Je me sentirai plus confiant, j\'aurai plus d\'énergie, je serai fier de moi, je ressentirai de la joie...'
+    },
+    {
+      key: 'flashback',
+      title: '3. Leçon',
+      subtitle: 'Souvenez-vous d\'un succès passé',
+      description: 'Pensez à un moment de votre vie où vous avez réussi à atteindre un objectif difficile en surmontant des obstacles. Décrivez cette situation, comment vous avez procédé, et ce qui vous a permis de réussir.',
+      placeholder: 'Quand j\'ai obtenu mon diplôme malgré les difficultés, j\'ai persévéré en me fixant des petits objectifs quotidiens...'
+    },
+    {
+      key: 'obstacle',
+      title: '4. Adversité',
+      subtitle: 'Quel est votre principal obstacle ?',
+      description: 'Pensez maintenant au principal obstacle interne qui pourrait vous empêcher de réaliser votre souhait. Il s\'agit de quelque chose en vous (habitude, émotion, pensée) plutôt que de facteurs externes.',
+      placeholder: 'Ma tendance à procrastiner, ma peur de l\'échec, mon manque de confiance en moi...'
+    },
+    {
+      key: 'plan',
+      title: '5. Solution',
+      subtitle: 'Quel est votre plan d\'action ?',
+      description: 'Créez maintenant un plan concret : "Si [obstacle se présente], alors je [action spécifique]."',
+      placeholder: 'Si je n\'ai pas le temps d\'étudier, alors je travaillerai mes cours dans les transports.'
+    }
+  ];
+
+  const handleInputChange = (value) => {
+    setResponses(prev => ({
+      ...prev,
+      [steps[currentStep].key]: value
+    }));
+  };
+
+  const goToNext = () => {
+    if (currentStep < steps.length - 1) {
+      setCurrentStep(currentStep + 1);
+    }
+  };
+
+  const goToPrevious = () => {
+    if (currentStep > 0) {
+      setCurrentStep(currentStep - 1);
+    }
+  };
+
+  const resetApp = () => {
+    setCurrentStep(0);
+    setShowSummary(false);
+    setResponses({
+      wish: '',
+      outcome: '',
+      flashback: '',
+      obstacle: '',
+      plan: ''
+    });
+  };
+
+  const showSummaryPage = () => {
+    setShowSummary(true);
+  };
+
+  const currentStepData = steps[currentStep];
+  const isLastStep = currentStep === steps.length - 1;
+  const canProceed = responses[currentStepData.key].trim().length > 0;
+
+  // Affichage du résumé
+  if (showSummary) {
+    return (
+      <div className="min-h-screen bg-gradient-to-br from-blue-50 to-indigo-100 p-4">
+        <div className="max-w-4xl mx-auto">
+          <div className="text-center mb-8">
+            <h1 className="text-3xl font-bold text-indigo-900 mb-4">Félicitations !</h1>
+            <p className="text-lg text-indigo-700">Voici votre résumé SILAS :</p>
+          </div>
+
+          <div className="bg-white rounded-xl shadow-lg p-8 mb-6">
+            <div className="space-y-6">
+              <div className="border-l-4 border-indigo-500 pl-6">
+                <h3 className="text-xl font-semibold text-indigo-700 mb-2">Mon Souhait est :</h3>
+                <p className="text-gray-700 leading-relaxed">{responses.wish}</p>
+              </div>
+
+              <div className="border-l-4 border-green-500 pl-6">
+                <h3 className="text-xl font-semibold text-green-700 mb-2">L'Issue serait :</h3>
+                <p className="text-gray-700 leading-relaxed">{responses.outcome}</p>
+              </div>
+
+              <div className="border-l-4 border-red-500 pl-6">
+                <h3 className="text-xl font-semibold text-red-700 mb-2">Mon Adversaire est :</h3>
+                <p className="text-gray-700 leading-relaxed">{responses.obstacle}</p>
+              </div>
+
+              <div className="border-l-4 border-purple-500 pl-6">
+                <h3 className="text-xl font-semibold text-purple-700 mb-2">Ma Solution est :</h3>
+                <p className="text-gray-700 leading-relaxed">{responses.plan}</p>
+              </div>
+
+              <div className="border-l-4 border-orange-500 pl-6">
+                <h3 className="text-xl font-semibold text-orange-700 mb-2">Pourquoi je peux le faire :</h3>
+                <p className="text-gray-700 leading-relaxed">{responses.flashback}</p>
+              </div>
+            </div>
+          </div>
+
+          <div className="text-center">
+            <button
+              onClick={resetApp}
+              className="flex items-center gap-2 mx-auto px-6 py-3 bg-indigo-600 text-white rounded-lg hover:bg-indigo-700 transition-colors font-medium"
+            >
+              <RotateCcw size={20} />
+              Recommencer
+            </button>
+          </div>
+        </div>
+      </div>
+    );
+  }
+
+  return (
+    <div className="min-h-screen bg-gradient-to-br from-blue-50 to-indigo-100 p-4">
+      <div className="max-w-4xl mx-auto">
+        {/* Progress Bar */}
+        <div className="mb-8">
+          <div className="flex justify-between items-center mb-2">
+            <span className="text-sm text-indigo-600">Progression</span>
+            <span className="text-sm text-indigo-600">{currentStep + 1} / {steps.length}</span>
+          </div>
+          <div className="w-full bg-indigo-200 rounded-full h-2">
+            <div 
+              className="bg-indigo-600 h-2 rounded-full transition-all duration-300"
+              style={{ width: `${((currentStep + 1) / steps.length) * 100}%` }}
+            />
+          </div>
+        </div>
+
+        {/* Main Content */}
+        <div className="bg-white rounded-xl shadow-lg p-8 mb-6">
+          <div className="mb-6">
+            <h2 className="text-2xl font-semibold text-gray-800 mb-2">
+              {currentStepData.title}
+            </h2>
+            <h3 className="text-xl text-indigo-600 mb-4">
+              {currentStepData.subtitle}
+            </h3>
+            <p className="text-gray-600 leading-relaxed">
+              {currentStepData.description}
+            </p>
+          </div>
+
+          <div className="mb-8">
+            <textarea
+              value={responses[currentStepData.key]}
+              onChange={(e) => handleInputChange(e.target.value)}
+              placeholder={currentStepData.placeholder}
+              className="w-full h-32 p-4 border-2 border-gray-200 rounded-lg focus:border-indigo-500 focus:outline-none resize-none text-gray-700"
+              rows={6}
+            />
+            <div className="text-right mt-2">
+              <span className="text-sm text-gray-500">
+                {responses[currentStepData.key].length} caractères
+              </span>
+            </div>
+          </div>
+
+          {/* Navigation Buttons */}
+          <div className="flex justify-between items-center">
+            <button
+              onClick={goToPrevious}
+              disabled={currentStep === 0}
+              className={`flex items-center gap-2 px-6 py-3 rounded-lg font-medium transition-all ${
+                currentStep === 0
+                  ? 'bg-gray-200 text-gray-400 cursor-not-allowed'
+                  : 'bg-gray-500 text-white hover:bg-gray-600'
+              }`}
+            >
+              <ChevronLeft size={20} />
+              Précédent
+            </button>
+
+            {!isLastStep ? (
+              <button
+                onClick={goToNext}
+                disabled={!canProceed}
+                className={`flex items-center gap-2 px-6 py-3 rounded-lg font-medium transition-all ${
+                  canProceed
+                    ? 'bg-indigo-600 text-white hover:bg-indigo-700'
+                    : 'bg-gray-200 text-gray-400 cursor-not-allowed'
+                }`}
+              >
+                Suivant
+                <ChevronRight size={20} />
+              </button>
+            ) : (
+              <button
+                onClick={showSummaryPage}
+                disabled={!canProceed}
+                className={`flex items-center gap-2 px-6 py-3 rounded-lg font-medium transition-all ${
+                  canProceed
+                    ? 'bg-green-600 text-white hover:bg-green-700'
+                    : 'bg-gray-200 text-gray-400 cursor-not-allowed'
+                }`}
+              >
+                <CheckCircle size={20} />
+                Terminé
+              </button>
+            )}
+          </div>
+        </div>
+
+        {/* Reset Button */}
+        <div className="text-center mt-8">
+          <button
+            onClick={resetApp}
+            className="flex items-center gap-2 mx-auto px-4 py-2 text-gray-600 hover:text-indigo-600 transition-colors"
+          >
+            <RotateCcw size={16} />
+            Recommencer
+          </button>
+        </div>
+
+        {/* Research Info */}
+        <div className="text-center mt-8 text-xs text-gray-500">
+          <p>Cette application est destinée à la recherche scientifique.</p>
+          <p>Toutes les données sont traitées de manière anonyme et confidentielle.</p>
+        </div>
+      </div>
+    </div>
+  );
+};
+
+export default WOOFApp;
